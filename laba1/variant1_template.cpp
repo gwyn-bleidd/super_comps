@@ -29,9 +29,22 @@ auto benchmark(std::function<T(input_type)> fn, input_type input, intptr_t nrepe
 }
 
 template <class T>
-T quadratic_form(matrix<T> A, vec<T> x)
-{   
-    return 0;
+T quadratic_form(int n, matrix<T> A, vec<T> x)
+{
+    double answer;
+    double tmp;
+    answer = 0.0;
+
+    for (int i = 0; i < n; i ++) {
+        tmp = 0.0;
+
+        for (int j = 0; j < n; j++) {
+            tmp += A(i + j * n) * x(j);
+        }
+        answer += tmp * x(i);
+    }
+
+    return answer;
 }
 
 int main(int argc, char* argv[])
@@ -41,7 +54,7 @@ int main(int argc, char* argv[])
     std::cin >> n;
     matrix<double> a(n, n);
     vec<double> x(n);
-    
+
     for (intptr_t k = 0; k < n * n; k++) {
         std::cin >> a(k);
     }
@@ -50,7 +63,7 @@ int main(int argc, char* argv[])
         std::cin >> x(k);
     }
 
-    std::function<double(int)> test_quadratic = [=](int idx) {return quadratic_form(a, x);};
+    std::function<double(int)> test_quadratic = [=](int idx) {return quadratic_form(n, a, x);};
 
     auto benchresult = benchmark(test_quadratic, 0, 1000);
 
